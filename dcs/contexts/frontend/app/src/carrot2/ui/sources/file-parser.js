@@ -2,15 +2,11 @@ import { pluralize } from "@carrotsearch/ui/lang/humanize.js";
 
 const parseSheet = async (file, logger) => {
   const XLSX = await import("xlsx");
-  const buffer = await (
-    file.type === "text/csv" || file.name.toLowerCase().endsWith(".csv")
-      ? file.text()
-      : file.arrayBuffer()
-  );
+  const isCSV = file.type === "text/csv" || file.name.toLowerCase().endsWith(".csv");
+  
+  const buffer = await (isCSV ? file.text() : file.arrayBuffer());
   const workbook = XLSX.read(buffer, {
-    type: file.type === "text/csv" || file.name.toLowerCase().endsWith(".csv")
-      ? "string"
-      : "array"
+    type: isCSV ? "string" : "array"
   });
   const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
